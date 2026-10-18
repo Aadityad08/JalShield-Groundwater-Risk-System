@@ -67,6 +67,11 @@ http://127.0.0
 ```
 
 ---
+## 📊 Data Sourcing & Fusion Acknowledgments
+The baseline historical datasets and regional groundwater thresholds mapped inside this application are fused using field statistics and compiled environmental records. 
+
+*   **Primary Processing Data:** `fused_tn_pumps.csv` (Locally maintained core lookup metrics).
+*   **External Hydrological Baselines:** Regional regional telemetry models sourced from public water records.
 
 ## 👥 Project Development & Academic Context
 *   **Project Name:** JalShield Water Management Platform
