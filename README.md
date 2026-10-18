@@ -4,7 +4,7 @@ JalShield is an end-to-end cyber-physical architecture designed to automate grou
 
 ---
 
-## 🚀 Key System Features
+##  Key System Features
 *   **Edge Hardware Ingestion:** Real-time data logging of Total Dissolved Solids (TDS), fluid temperature, and flow velocity via an ESP32 microcontroller core.
 *   **High-Level Data Fusion:** Disparate raw sensor streams are continuously fused with static, local ground-truth water tables to remove telemetry noise and sensor spikes.
 *   **Priority Intervention Score (PIS):** A multi-criteria mathematical formula that aggregates normalized risk parameters through a weighted arithmetic sum to identify systemic weak points.
@@ -15,7 +15,7 @@ JalShield is an end-to-end cyber-physical architecture designed to automate grou
 
 ---
 
-## 📂 Project Repository Structure
+##  Project Repository Structure
 
 ```text
 JalShield/
@@ -32,7 +32,7 @@ JalShield/
 
 ---
 
-## 🛠️ System Mathematical Framework
+## System Mathematical Framework
 
 ### 1. Priority Intervention Score (PIS) Formula
 Raw sensor dimensions are mapped to dimensionless hazard sub-indicators (\(R_i \in [1, 10]\)) and calculated via a relative weighted sum:
@@ -48,7 +48,7 @@ The target node selection space is evaluated sequentially based on immediate loc
 
 ---
 
-## 💻 Software Setup & Local Execution
+## Software Setup & Local Execution
 
 ### Prerequisites
 Ensure your local Python ecosystem has the necessary structural libraries installed:
@@ -67,7 +67,7 @@ http://127.0.0
 ```
 
 ---
-## 📊 Data Sourcing & Fusion Acknowledgments
+## Data Sourcing & Fusion Acknowledgments
 The baseline historical datasets and regional groundwater thresholds mapped inside this application are fused using field statistics and compiled environmental records. 
 
 *   **Primary Processing Data:** `fused_tn_pumps.csv` (Locally maintained core lookup metrics).
