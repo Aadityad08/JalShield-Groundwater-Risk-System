@@ -1,0 +1,149 @@
+#include <Wire.h>
+#include <math.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// OLED
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_ADDR 0x3C
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+// Sensors
+#define TDS_PIN 32
+#define ONE_WIRE_BUS 4
+
+Adafruit_MPU6050 mpu;
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature tempSensor(&oneWire);
+
+bool mpuActive = false;
+bool tempActive = false;
+bool oledActive = false;
+
+float vibration = 0;
+float tdsPPM = 0;
+float tempC = 0;
+float flowLpm = 90.0; // Simulated
+
+unsigned long lastSend = 0;
+unsigned long lastDisplay = 0;
+
+void setup() {
+  Serial.begin(115200);
+  delay(800);
+
+  Wire.begin(21, 22);
+
+  // Initialize OLED
+  oledActive = display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
+
+  if (oledActive) {
+    display.clearDisplay();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(0, 0);
+    display.println("JalShield");
+    display.println("Initializing...");
+    display.display();
+  } else {
+    Serial.println("OLED initialization failed");
+  }
+
+  // Initialize MPU6050
+  mpuActive = mpu.begin();
+  if (mpuActive) {
+    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+  }
+
+  // Initialize temperature sensor
+  tempSensor.begin();
+  tempActive = tempSensor.getDeviceCount() > 0;
+
+  analogReadResolution(12);
+
+  Serial.println("JalShield USB telemetry ready");
+}
+
+void loop() {
+  if (mpuActive) {
+    sensors_event_t a, g, t;
+    mpu.getEvent(&a, &g, &t);
+
+    vibration = sqrt(
+      a.acceleration.x * a.acceleration.x +
+      a.acceleration.y * a.acceleration.y +
+      a.acceleration.z * a.acceleration.z
+    );
+  }
+
+  int raw = analogRead(TDS_PIN);
+  float voltage = raw * (3.3f / 4095.0f);
+  tdsPPM = (voltage / 3.3f) * 1000.0f; // Placeholder only
+
+  if (tempActive) {
+    tempSensor.requestTemperatures();
+    float t = tempSensor.getTempCByIndex(0);
+
+    if (t != DEVICE_DISCONNECTED_C && t >= -55 && t <= 125) {
+      tempC = t;
+    }
+  }
+
+  // Update OLED twice per second
+  if (oledActive && millis() - lastDisplay >= 500) {
+    lastDisplay = millis();
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+
+    display.println("JALSHIELD LIVE");
+    display.println("----------------");
+
+    display.print("Accel: ");
+    display.print(vibration, 2);
+    display.println(" m/s2");
+
+    display.print("TDS: ");
+    display.print(tdsPPM, 0);
+    display.println(" ppm*");
+
+    display.print("Temp: ");
+    if (tempActive) {
+      display.print(tempC, 1);
+      display.println(" C");
+    } else {
+      display.println("No sensor");
+    }
+
+    display.print("Flow: ");
+    display.print(flowLpm, 1);
+    display.println(" L/m*");
+
+    display.display();
+  }
+
+  // USB telemetry: one JSON object per line
+  if (millis() - lastSend >= 2000) {
+    lastSend = millis();
+
+    Serial.print("{\"vibration_ms2\":");
+    Serial.print(vibration, 2);
+    Serial.print(",\"flow_lpm\":");
+    Serial.print(flowLpm, 1);
+    Serial.print(",\"tds_ppm\":");
+    Serial.print(tdsPPM, 1);
+    Serial.print(",\"temp_c\":");
+    Serial.print(tempC, 2);
+    Serial.println("}");
+  }
+
+  delay(20);
+}
