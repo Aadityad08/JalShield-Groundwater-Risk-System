@@ -73,7 +73,7 @@ The baseline historical datasets and regional groundwater thresholds mapped insi
 *   **Primary Processing Data:** `fused_tn_pumps.csv` (Locally maintained core lookup metrics).
 *   **External Hydrological Baselines:** Regional regional telemetry models sourced from public water records.
 
-## 👥 Project Development & Academic Context
+##  Project Development & Academic Context
 *   **Project Name:** JalShield Water Management Platform
 *   **Course Context:** Engineering Capstone / Final Year Project Submission
 *   **Hardware Interface Core:** ESP32 Breadboard Node Assembly
