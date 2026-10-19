@@ -188,6 +188,4 @@ Replace the synthetic fields with real telemetry and laboratory or CGWB observat
 - Greedy selection is not guaranteed to be optimal.
 - TDS is uncalibrated and flow is simulated on the current node.
 
-## Project context
 
-Engineering capstone / final year project. [Add authors, guide, institution and licence.]
